@@ -1,0 +1,51 @@
+{
+  "name": "@mstoduto/n8n-nodes-ubiquiti-access",
+  "version": "1.0.0",
+  "description": "Nodo n8n per UniFi Access (Ubiquiti): porte, utenti, visitatori, credenziali NFC/PIN, policy, log e webhook tramite l'API ufficiale",
+  "keywords": [
+    "n8n-community-node-package",
+    "unifi",
+    "unifi-access",
+    "ubiquiti",
+    "access-control"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "marcostoduto"
+  },
+  "homepage": "https://github.com/marcostoduto/n8n-nodes-ubiquiti-access#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcostoduto/n8n-nodes-ubiquiti-access.git"
+  },
+  "bugs": {
+    "url": "https://github.com/marcostoduto/n8n-nodes-ubiquiti-access/issues"
+  },
+  "main": "index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && node scripts/copy-icons.js",
+    "dev": "tsc --watch",
+    "test": "npm run build && node test/mock-test.js"
+  },
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/UnifiAccessApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/UnifiAccess/UnifiAccess.node.js",
+      "dist/nodes/UnifiAccess/UnifiAccessTrigger.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "n8n-workflow": "*",
+    "typescript": "^5.6.0"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}
