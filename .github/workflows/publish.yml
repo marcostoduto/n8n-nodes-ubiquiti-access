@@ -1,0 +1,46 @@
+# Pubblica su npm:
+#  - automaticamente al push di un tag vX.Y.Z (deve coincidere con "version" in package.json)
+#  - manualmente da Actions > Publish to npm > Run workflow (pubblica la versione di package.json)
+# Richiede il secret NPM_TOKEN (Settings > Secrets and variables > Actions).
+# La provenance npm viene aggiunta solo se il repository è pubblico (npm la rifiuta per i repo privati).
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # necessario per --provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Verifica versione
+        if: github.event_name == 'push'
+        run: |
+          PKG="v$(node -p "require('./package.json').version")"
+          if [ "$PKG" != "$GITHUB_REF_NAME" ]; then
+            echo "Il tag $GITHUB_REF_NAME non coincide con package.json ($PKG)"; exit 1
+          fi
+
+      - name: Installa dipendenze di sviluppo
+        run: npm install --no-audit --no-fund
+
+      - name: Build e test (contro un finto UniFi Access)
+        run: npm test
+
+      - name: Publish
+        run: npm publish --access public ${{ github.event.repository.private && ' ' || '--provenance' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
