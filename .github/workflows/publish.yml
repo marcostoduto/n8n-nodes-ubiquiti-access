@@ -1,8 +1,10 @@
 # Pubblica su npm:
 #  - automaticamente al push di un tag vX.Y.Z (deve coincidere con "version" in package.json)
 #  - manualmente da Actions > Publish to npm > Run workflow (pubblica la versione di package.json)
-# Richiede il secret NPM_TOKEN (Settings > Secrets and variables > Actions).
-# La provenance npm viene aggiunta solo se il repository è pubblico (npm la rifiuta per i repo privati).
+# Autenticazione: npm Trusted Publishing (OIDC), nessun token e nessuna 2FA da inserire.
+# Su npmjs.com > pacchetto > Settings > Trusted Publisher > GitHub Actions:
+#   owner marcostoduto, repository n8n-nodes-ubiquiti-access, workflow publish.yml
+# La provenance viene generata automaticamente.
 name: Publish to npm
 
 on:
@@ -34,6 +36,9 @@ jobs:
             echo "Il tag $GITHUB_REF_NAME non coincide con package.json ($PKG)"; exit 1
           fi
 
+      - name: Aggiorna npm (Trusted Publishing richiede npm 11.5.1+)
+        run: npm install -g npm@latest
+
       - name: Installa dipendenze di sviluppo
         run: npm install --no-audit --no-fund
 
@@ -41,6 +46,4 @@ jobs:
         run: npm test
 
       - name: Publish
-        run: npm publish --access public ${{ github.event.repository.private && ' ' || '--provenance' }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public

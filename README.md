@@ -104,20 +104,20 @@ Il codice compilato non richiede dipendenze a runtime: da `n8n-workflow` usa sol
 
 ## Pubblicazione su npm
 
-**Automatica (GitHub Actions):**
+**Automatica (GitHub Actions, Trusted Publishing):**
 
-1. Su npmjs.com crea un token di tipo *Granular Access Token* con permesso di pubblicazione
-   (se lo scope `@mstoduto` esiste già, dagli accesso in scrittura ai pacchetti dello scope).
-2. Su GitHub aggiungilo come secret `NPM_TOKEN` (*Settings > Secrets and variables > Actions*).
-3. Aggiorna `version` in `package.json`, fai commit e crea il tag corrispondente:
+1. Su npmjs.com apri il pacchetto > *Settings > Trusted Publisher > GitHub Actions* e indica:
+   owner `marcostoduto`, repository `n8n-nodes-ubiquiti-access`, workflow `publish.yml`.
+   Non servono token né secret: npm si fida delle esecuzioni di quel workflow (OIDC).
+2. Aggiorna la versione e crea il tag corrispondente:
 
    ```bash
-   git tag v1.0.0 && git push origin v1.0.0
+   npm version patch            # oppure minor / major: aggiorna package.json, commit e tag
+   git push origin main --follow-tags
    ```
 
 Il workflow `.github/workflows/publish.yml` installa le dipendenze, compila, esegue i test
-e pubblica. La provenance npm viene aggiunta solo quando il repository è pubblico
-(npm non la accetta da repository privati). Si può lanciare anche a mano da
+e pubblica con provenance. Si può lanciare anche a mano da
 *Actions > Publish to npm > Run workflow*.
 
 Il workflow `.github/workflows/ci.yml` esegue build e test a ogni push su `main` e a ogni pull request.

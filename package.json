@@ -1,6 +1,6 @@
 {
   "name": "@mstoduto/n8n-nodes-ubiquiti-access",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Nodo n8n per UniFi Access (Ubiquiti): porte, utenti, visitatori, credenziali NFC/PIN, policy, log e webhook tramite l'API ufficiale",
   "keywords": [
     "n8n-community-node-package",
